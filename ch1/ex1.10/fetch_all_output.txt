@@ -1,0 +1,3 @@
+0.43s    40948  https://golangbot.com/write-files/
+0.57s   184363  http://ixbt.com
+1.63s    73385  https://www.dtelepathy.com/blog/inspiration/14-beautiful-content-heavy-websites-for-inspiration
