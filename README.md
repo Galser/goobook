@@ -8,7 +8,6 @@ Sometimes they repeat the original code, and sometimes there are going to be soi
 
 ## chapters
 
-- [ ] - chapter 1
 - [ ] - chapter 2
 - [ ] - chapter 3
 - [ ] - chapter 4
@@ -23,3 +22,5 @@ Sometimes they repeat the original code, and sometimes there are going to be soi
 - [ ] - chapter 13
 
 # DONE
+- [x] - chapter 1
+
