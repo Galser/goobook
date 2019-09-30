@@ -6,6 +6,7 @@ Sometimes they repeat the original code, and sometimes there are going to be soi
 
 # TODO
 
+
 ## chapters
 
 - [ ] - chapter 2
@@ -23,4 +24,5 @@ Sometimes they repeat the original code, and sometimes there are going to be soi
 
 # DONE
 - [x] - chapter 1
-
+- [x] prepare for offline learning, stopped at : 2.6.2. Package Initialization
+  - [x] - download all needed stuff
