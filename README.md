@@ -9,8 +9,6 @@ Sometimes they repeat the original code, and sometimes there are going to be soi
 
 ## chapters
 
-
-- [ ] - chapter 3
 - [ ] - chapter 4
 - [ ] - chapter 5
 - [ ] - chapter 6
@@ -22,8 +20,10 @@ Sometimes they repeat the original code, and sometimes there are going to be soi
 - [ ] - chapter 12
 - [ ] - chapter 13
 
+
 # DONE
 - [x] - chapter 1
 - [x] prepare for offline learning, stopped at : 2.6.2. Package Initialization
   - [x] - download all needed stuff
 - [x] - chapter 2
+- [x] - chapter 3
