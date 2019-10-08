@@ -13,12 +13,17 @@ func reverse(s []int) {
 func main() {
 	test0 := [...]int{0, 1, 2, 3, 4, 5}
 	fmt.Println(test0)
-	reverse(test0[:])
+	reverse(test0[:2])
+	reverse(test0[2:])
+	reverse(test0[:]) // in the book this is written as "reverse(s)" on page 86, which is not going to work
+			  // with modern Go
+	
 	fmt.Println(test0)
 	/* Output : 
 	[0 1 2 3 4 5]
-	[5 4 3 2 1 0]
+	[2 3 4 5 0 1]
 	*/
+	
 
 }
 
