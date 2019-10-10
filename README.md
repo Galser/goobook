@@ -27,3 +27,10 @@ Sometimes they repeat the original code, and sometimes there are going to be soi
   - [x] - download all needed stuff
 - [x] - chapter 2
 - [x] - chapter 3
+
+# Notes
+
+1. Cross-copiling for Linux AMD65 arch, as easy as running :
+  ```
+   GOOS=linux GOARCH=amd64 go build main.go
+  ```
