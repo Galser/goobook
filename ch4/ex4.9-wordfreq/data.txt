@@ -1,0 +1,5 @@
+A typical syntax of a variadic function looks like above. ... operator called as pack operator instructs go to store all arguments of type Type in elem parameter. With this syntax, go creates elem variable of the type []Type which is a slice. Hence, all arguments passed to this function is stored in a elem slice.
+Let’s take an example of append function.
+append([]Type, args, arg2, argsN)
+append function expects the first argument to be a slice of type Type, while there can be a variable number of arguments after that. If we have a slice s2 that we want to append to a slice s1, how that will work?
+As from append function syntax, we can’t pass another slice as an argument, it has to be one or many arguments of type Type. Hence, instead, we will use the unpack operator ... to unpack slice into the series of arguments (which is acceptable by append function).
