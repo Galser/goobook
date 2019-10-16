@@ -42,5 +42,16 @@ func main() {
 	fmt.Println(hasEdge("x", "d"))
 	fmt.Println(hasEdge("d", "x"))
 	fmt.Println(hasEdge("c", "b"))
-
+/*
+map[a:map[b:true d:true] c:map[d:true] d:map[a:true]]
+ab:true
+cd:true
+ad:true
+da:true
+xb:false
+cd:true
+xd:false
+dx:false
+cb:false
+*/
 }
