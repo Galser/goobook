@@ -1,10 +1,14 @@
 // Copyright © 2016 Alan A. A. Donovan & Brian W. Kernighan.
 // License: https://creativecommons.org/licenses/by-nc-sa/4.0/
 
-// See page 112.
-//!+
-
 // Issues prints a table of GitHub issues matching the search terms.
+// and in some time criteria
+// - less than a month old,
+// - less than a year old
+// - and more than a year old
+
+// added color-coding
+
 package main
 
 import (
@@ -14,20 +18,38 @@ import (
 	"time"
 
 	"mycode/ch4/github"
+
+	"github.com/gookit/color"
 )
 
 //!+
 func main() {
 	now := time.Now()
-
+	monthAgo := now.AddDate(0, -1, 0)
+	yearAgo := now.AddDate(-1, 0, 0)
 	result, err := github.SearchIssues(os.Args[1:])
 	if err != nil {
 		log.Fatal(err)
 	}
+	red := color.FgRed.Render
+	yellow := color.FgYellow.Render
+	green := color.FgGreen.Render
+	defColor := green
+	fmt.Printf("%s  (>1 year), \n%s (>1 month) \n%s - fresh one\n", red("=== very old issue"), yellow("=== slightly old"), green("=== fresh"))
+
 	fmt.Printf("%d issues:\n", result.TotalCount)
 	for _, item := range result.Items {
-		fmt.Printf("#%-5d %9.9s %.55s\n",
-			item.Number, item.User.Login, item.Title)
+		if item.CreatedAt.Before(yearAgo) {
+			defColor = green
+		} else {
+			if item.CreatedAt.Before(monthAgo) {
+				defColor = yellow
+			} else {
+				defColor = red
+			}
+		}
+		fmt.Printf("%s #%-5d %9.9s %.55s\n",
+			defColor("==="), item.Number, item.User.Login, item.Title)
 	}
 }
 
