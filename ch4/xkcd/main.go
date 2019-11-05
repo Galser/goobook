@@ -6,6 +6,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -59,6 +60,11 @@ type XKCD struct {
 	Day        string
 }
 
+/* type XKCDIndex struct {
+    Comics []XKCD `json:"xkcd"`
+}
+*/
+
 func getCurrentComicJSON() (*XKCD, error) {
 	resp, err := http.Get(BaseURL + InfoJSON)
 	if err != nil {
@@ -104,13 +110,59 @@ func getOneComicJSON(Num int) (*XKCD, error) {
 	return &result, nil
 }
 
-//  saveXKCDIndex - reads from site all posiible
-// JSONS and saving them into file
-func saveXKCDIndex() {
+func buildIndex() ([]*XKCD, error) {
+	// get current comic
+	comic, err := getCurrentComicJSON()
+	if err != nil {
+		return nil, err
+	}
+	maxNum := comic.Num
+	fmt.Println("Last comic number is %d", maxNum)
+	var memIndex []*XKCD
+	memIndex = append(memIndex, comic)
+	for i := 2; i <= 5; i++ {
+		comic, err = getOneComicJSON(i)
+		memIndex = append(memIndex, comic)
+	} // go over all comics and create an in-memory slice
+	return memIndex, nil
+}
 
+//  saveXKCDIndex - reads from site all possible
+// JSONs and saving them into file
+func saveXKCDIndex(filename string, Comics []*XKCD) error {
+	comicsJSON, err := json.Marshal(Comics)
+	if err != nil {
+		return err
+	}
+	err = ioutil.WriteFile(filename, comicsJSON, 0644)
+	return err
+}
+
+func loadXKCDIndex(filename string) ([]*XKCD, error) {
+	comicsJSON, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+	var comics []*XKCD
+	err = json.Unmarshal(comicsJSON, &comics)
+	return comics, err
 }
 
 func main() {
-	comic, err := getCurrentComicJSON()
-	fmt.Println(comic, err)
+	//	comic, err := getCurrentComicJSON()
+	//	fmt.Println(comic, err)
+	/* 	comics, err := buildIndex()
+	   	if err == nil {
+	   		for _, comic := range comics {
+	   			fmt.Printf("Title \"%s\", image URL : \"%s\" \n", comic.SafeTitle, comic.Img)
+	   		}
+	   	}
+	*/ // saveXKCDIndex("test.index", comics)
+	comics, err := loadXKCDIndex("test.index")
+	if err == nil {
+		for _, comic := range comics {
+			fmt.Printf("Title \"%s\", image URL : \"%s\" \n", comic.SafeTitle, comic.Img)
+		}
+	}
+
 }
