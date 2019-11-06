@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"net/http"
 )
 
@@ -46,6 +47,7 @@ Example of one JSON
 */
 const BaseURL = "http://xkcd.com/"
 const InfoJSON = "info.0.json"
+const indexFileName = "xkcd.index"
 
 type XKCD struct {
 	Month      string
@@ -117,13 +119,20 @@ func buildIndex() ([]*XKCD, error) {
 		return nil, err
 	}
 	maxNum := comic.Num
-	fmt.Println("Last comic number is %d", maxNum)
+	fmt.Println("Last comic number is : ", maxNum)
+	fmt.Print("Building index (one # - is 5% ) --> [")
 	var memIndex []*XKCD
 	memIndex = append(memIndex, comic)
-	for i := 2; i <= 5; i++ {
+	progress := 0
+	for i := 2; i <= maxNum; i++ {
+		if int(math.Ceil(float64(i*20/maxNum))) > progress {
+			progress++
+			fmt.Print("#")
+		}
 		comic, err = getOneComicJSON(i)
 		memIndex = append(memIndex, comic)
 	} // go over all comics and create an in-memory slice
+	fmt.Println("]")
 	return memIndex, nil
 }
 
@@ -145,23 +154,28 @@ func loadXKCDIndex(filename string) ([]*XKCD, error) {
 	}
 	var comics []*XKCD
 	err = json.Unmarshal(comicsJSON, &comics)
+	if err == nil {
+		fmt.Println("Successfully loaded index from disk")
+	}
 	return comics, err
 }
 
 func main() {
-	//	comic, err := getCurrentComicJSON()
-	//	fmt.Println(comic, err)
-	/* 	comics, err := buildIndex()
-	   	if err == nil {
-	   		for _, comic := range comics {
-	   			fmt.Printf("Title \"%s\", image URL : \"%s\" \n", comic.SafeTitle, comic.Img)
-	   		}
-	   	}
-	*/ // saveXKCDIndex("test.index", comics)
-	comics, err := loadXKCDIndex("test.index")
+	comics, err := loadXKCDIndex(indexFileName)
+	if err != nil {
+		fmt.Printf("Index file could not be opened ('%s'), going to create one\n", indexFileName)
+		comics, err = buildIndex()
+		_ = saveXKCDIndex(indexFileName, comics)
+		// we don't care about the error above for now
+	}
+	comicsInIndexNow := len(comics)
+	fmt.Println("Number of comics in index right now : ", comicsInIndexNow)
+	//if comics[0].Num <
 	if err == nil {
 		for _, comic := range comics {
-			fmt.Printf("Title \"%s\", image URL : \"%s\" \n", comic.SafeTitle, comic.Img)
+			if comic != nil && comic.SafeTitle != "" && comic.Img != "" {
+				fmt.Printf("Title \"%s\", image URL : \"%s\" \n", comic.SafeTitle, comic.Img)
+			}
 		}
 	}
 
