@@ -9,6 +9,10 @@ import (
 	"io/ioutil"
 	"math"
 	"net/http"
+	"os"
+	"strings"
+
+	"github.com/gookit/color"
 )
 
 /*
@@ -160,23 +164,85 @@ func loadXKCDIndex(filename string) ([]*XKCD, error) {
 	return comics, err
 }
 
+func searchTerm(term string, Comics []*XKCD) {
+	yellow := color.FgYellow.Render
+	for _, comic := range Comics {
+		if comic != nil && comic.SafeTitle != "" && comic.Img != "" && comic.Transcript != "" {
+			if strings.Contains(comic.Transcript, term) {
+				s := strings.ReplaceAll(comic.Transcript, term, yellow(term))
+				fmt.Printf("Title \"%s\", \n \" %s \" \nimage URL : \"%s\" \n", comic.SafeTitle, s, comic.Img)
+			}
+		}
+	}
+}
+
 func main() {
+	if len(os.Args) < 2 {
+		fmt.Println("Usage:", os.Args[0], "TERM")
+		fmt.Println(" -- will search for TERM in offline XKCD index")
+		return
+	}
+	comicsInIndexNow := 0
 	comics, err := loadXKCDIndex(indexFileName)
 	if err != nil {
 		fmt.Printf("Index file could not be opened ('%s'), going to create one\n", indexFileName)
 		comics, err = buildIndex()
 		_ = saveXKCDIndex(indexFileName, comics)
 		// we don't care about the error above for now
-	}
-	comicsInIndexNow := len(comics)
-	fmt.Println("Number of comics in index right now : ", comicsInIndexNow)
-	//if comics[0].Num <
-	if err == nil {
-		for _, comic := range comics {
-			if comic != nil && comic.SafeTitle != "" && comic.Img != "" {
-				fmt.Printf("Title \"%s\", image URL : \"%s\" \n", comic.SafeTitle, comic.Img)
+	} else {
+		comicsInIndexNow = len(comics)
+		lastcomic, err := getCurrentComicJSON()
+		if err != nil {
+			fmt.Println("Failed to read the current/last comic")
+		} else {
+			maxNum := lastcomic.Num
+			if maxNum > comicsInIndexNow {
+				fmt.Printf("Index need to be updated...")
 			}
 		}
 	}
+	comicsInIndexNow = len(comics)
+	fmt.Println("Number of comics in index right now : ", comicsInIndexNow)
+	fmt.Println("Looking for '", os.Args[1], "' in offline index \n")
+	searchTerm(os.Args[1], comics)
 
 }
+
+/*
+
+Output example (it comes with colors ):
+
+go run main.go Cisco
+Successfully loaded index from disk
+Index need to be updated...Number of comics in index right now :  2224
+Looking for ' Cisco ' in offline index
+
+Title "Missed Connections",
+ " ((The page is set up like the missed connections area of Craigslist, with a list of messages from an individual to a person they weren't able to communicate with at the time.))
+Personals > Missed Connections
+
+You: Clinging to hood of your stolen wienermobile, trying to reach into engine to unstick throttle
+Me: Screaming, diving out of the way
+
+You: Vaguely human silhouette
+Me: At bottom of wishing well with harpoon gun
+
+You: Confused UDP packet
+Me: Cisco router in 45.170
+16 block
+
+You: Baddest fuckin' Juggalo at Violent J's party
+Me: Nancy Pelosi (D-Ca)
+
+You: Getting married to me
+Me: Also getting married, but distracted by my phone
+
+You: Cute boy on corner of 4th & Main, 5'11, 169lbs, social security number 078-05-1120, pockets contained $2.09 in change, keys, and a condom. Retinal scan attached
+Me: Driving street view van
+
+You: George Herman "Babe" Ruth
+Me: Fellow Time Lord. Saw your tardis on third moon of <<Sentence cuts off, partially obscured by bottom of panel>>
+
+{{Title text: The Street View van isn't going to find out anything Google won't already know from reading my email.}} "
+image URL : "https://imgs.xkcd.com/comics/missed_connections.png"
+*/
