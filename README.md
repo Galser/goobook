@@ -9,7 +9,6 @@ Sometimes they repeat the original code, and sometimes there are going to be soi
 
 ## chapters
 
-- [ ] - chapter 4
 - [ ] - chapter 5
 - [ ] - chapter 6
 - [ ] - chapter 7
@@ -27,6 +26,8 @@ Sometimes they repeat the original code, and sometimes there are going to be soi
   - [x] - download all needed stuff
 - [x] - chapter 2
 - [x] - chapter 3
+- [x] - chapter 4
+
 
 # Notes
 
