@@ -40,6 +40,41 @@ func (s *IntSet) UnionWith(t *IntSet) {
 	}
 }
 
+// 6.1 p 167
+
+// return the number of elements
+func (s *IntSet) Len() int {
+	var count = 0
+	for _, word := range s.words {
+		if word == 0 {
+			continue
+		}
+		for j := 0; j <= 64; j++ {
+			if word&(1<<uint(j)) != 0 {
+				count++
+			}
+		}
+	}
+	return count
+}
+
+// remove x from the set
+func (s *IntSet) Remove(x int) {
+}
+
+// remove all elements from the set
+func (s *IntSet) Clear() {
+}
+
+// return a copy of the set
+func (s *IntSet) Copy() *IntSet {
+	var t *IntSet
+	for _, word := range s.words {
+		t.words = append(t.words, word)
+	}
+	return t
+}
+
 //!-intset
 
 //!+string
