@@ -60,21 +60,22 @@ func (s *IntSet) Len() int {
 
 // remove x from the set
 func (s *IntSet) Remove(x int) {
+	word, bit := x/64, uint(x%64)
+	if word < len(s.words) && s.words[word]&(1<<bit) != 0 {
+		s.words[word] = s.words[word] &^ (1 << bit) // &^ - is Bitclear operation!
+		/*		if(s.words[word]==0) {
+				// we got 0
+			}  */
+	}
 }
 
 // remove all elements from the set
 func (s *IntSet) Clear() {
+	s.words = nil
 }
 
 // return a copy of the set
 func (s *IntSet) Copy() *IntSet {
-	/*	word, bit := x/64, uint(x%64)
-		for word >= len(s.words) {
-			s.words = append(s.words, 0)
-		}
-		s.words[word] |= 1 << bit
-	*/
-
 	var t IntSet
 	for _, word := range s.words {
 		t.words = append(t.words, word)
