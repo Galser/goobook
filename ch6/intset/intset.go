@@ -68,11 +68,18 @@ func (s *IntSet) Clear() {
 
 // return a copy of the set
 func (s *IntSet) Copy() *IntSet {
-	var t *IntSet
+	/*	word, bit := x/64, uint(x%64)
+		for word >= len(s.words) {
+			s.words = append(s.words, 0)
+		}
+		s.words[word] |= 1 << bit
+	*/
+
+	var t IntSet
 	for _, word := range s.words {
 		t.words = append(t.words, word)
 	}
-	return t
+	return &t
 }
 
 //!-intset
